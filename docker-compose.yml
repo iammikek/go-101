@@ -1,0 +1,12 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount source for development (requires hot reload setup)
+      - .:/app
+    environment:
+      - DATABASE_URL=app.db
+      - API_KEY=dev-key-123
+      - PORT=8000
