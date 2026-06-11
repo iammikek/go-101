@@ -8,6 +8,8 @@ RUN go mod download
 COPY . .
 RUN go build -o app .
 
+# Migrations are applied at runtime from the working directory
+
 # Runtime stage
 FROM alpine:latest
 
@@ -15,6 +17,7 @@ RUN apk --no-cache add ca-certificates
 
 WORKDIR /app
 COPY --from=builder /app/app .
+COPY --from=builder /app/migrations ./migrations
 
 EXPOSE 8000
 

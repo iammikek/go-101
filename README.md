@@ -15,6 +15,11 @@ A step-by-step guide to building a minimal Go API with SQLite, Docker, and tests
 7. **Data models** (`models.go`) with request/response schemas
 8. **API key authentication** (middleware) for protecting endpoints
 9. **Service layer** in `main.go` separating business logic from routes
+10. **Tests** with `testify` mirroring the FastAPI-101 test suite
+11. **Structured logging** with `slog` and request middleware
+12. **Request validation** with `playground/validator`
+13. **SQL migrations** with `golang-migrate`
+14. **CI/CD** with GitHub Actions for testing and linting
 
 ---
 
@@ -42,11 +47,17 @@ Then open:
 
 ```
 go-101/
-├── main.go              # Go application with routes and handlers
-├── models.go            # Data models (Item, ItemCreate, ItemUpdate)
-├── auth.go              # API key authentication middleware
+├── main.go              # Application entry point
+├── internal/app/        # Application code (handlers, models, auth, etc.)
+├── migrations/          # SQL migration files (golang-migrate)
+├── tests/
+│   ├── testcase/        # Laravel-style TestCase base with HTTP helpers
+│   ├── feature/         # HTTP / integration tests
+│   └── unit/            # Unit tests (auth, validation)
 ├── go.mod               # Go module definition
 ├── go.sum               # Go module checksums
+├── Makefile             # Development commands (test, lint, build)
+├── .github/workflows/   # GitHub Actions CI
 ├── Dockerfile           # How to build the container image
 ├── docker-compose.yml   # How to run the container
 ├── .dockerignore        # Files to exclude from Docker build
@@ -64,9 +75,12 @@ go-101/
 | Package | Purpose |
 |---------|----------|
 | `gin-gonic/gin` | Web framework: routing, middleware, validation |
-| `gorm.io/gorm` | ORM: database abstraction, migrations |
+| `gorm.io/gorm` | ORM: database abstraction |
 | `gorm.io/driver/sqlite` | SQLite driver for GORM |
 | `mattn/go-sqlite3` | SQLite C bindings for Go |
+| `golang-migrate/migrate` | Database schema migrations |
+| `go-playground/validator` | Advanced request validation |
+| `stretchr/testify` | Test assertions |
 
 ---
 
@@ -117,10 +131,10 @@ Provides API key authentication via middleware:
 
 ## Database
 
-Uses **SQLite** with **GORM**:
+Uses **SQLite** with **GORM** and **golang-migrate**:
 
 - **DATABASE_URL** env var (default: `app.db`)
-- Auto-migration on startup
+- SQL migrations in `migrations/` applied on startup
 - Supports typical SQL operations (SELECT, INSERT, UPDATE, DELETE)
 
 ---
@@ -220,13 +234,35 @@ curl http://localhost:8000/items/stats/summary
 
 ---
 
-## Next Steps
+## Testing
 
-1. **Add tests** – Use `testing` package or a test framework like `testify`
-2. **Add logging** – Use `slog` or a library like `logrus` or `zap`
-3. **Add validation** – Use `playground/validator` for advanced validation
-4. **Add migrations** – Use `golang-migrate` for database schema management
-5. **Add CI/CD** – Set up GitHub Actions for testing and linting
+Tests follow a Laravel-style layout:
+
+| Directory | Purpose |
+|-----------|---------|
+| `tests/feature/` | HTTP integration tests (like Laravel Feature tests) |
+| `tests/unit/` | Isolated unit tests (like Laravel Unit tests) |
+| `tests/testcase/` | Shared `TestCase` base with `Get`, `Post`, `ResetDatabase`, etc. |
+
+Run the test suite (mirrors the FastAPI-101 test coverage):
+
+```bash
+make test
+
+# Or directly:
+go test -v -race ./internal/... ./tests/...
+```
+
+## Development
+
+```bash
+make lint          # Run golangci-lint
+make test-coverage # Run tests with coverage report
+make build         # Build binary
+make install-tools # Install golangci-lint and migrate CLI
+```
+
+CI runs on every push and pull request to `main` via GitHub Actions (`.github/workflows/ci.yml`).
 
 ---
 
