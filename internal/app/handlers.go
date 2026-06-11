@@ -146,9 +146,18 @@ func getItemsStats(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		db.Model(&Item{}).Select("AVG(price)").Row().Scan(&avgPrice)
-		db.Model(&Item{}).Select("MIN(price)").Row().Scan(&minPrice)
-		db.Model(&Item{}).Select("MAX(price)").Row().Scan(&maxPrice)
+		if err := db.Model(&Item{}).Select("AVG(price)").Row().Scan(&avgPrice); err != nil {
+			c.JSON(500, gin.H{"detail": "Failed to get stats"})
+			return
+		}
+		if err := db.Model(&Item{}).Select("MIN(price)").Row().Scan(&minPrice); err != nil {
+			c.JSON(500, gin.H{"detail": "Failed to get stats"})
+			return
+		}
+		if err := db.Model(&Item{}).Select("MAX(price)").Row().Scan(&maxPrice); err != nil {
+			c.JSON(500, gin.H{"detail": "Failed to get stats"})
+			return
+		}
 
 		c.JSON(200, gin.H{
 			"total_items":   count,
