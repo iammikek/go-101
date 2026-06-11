@@ -24,10 +24,21 @@ func runMigrations(databaseURL string) error {
 	if err != nil {
 		return fmt.Errorf("create migrator: %w", err)
 	}
-	defer m.Close()
 
 	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
-		return fmt.Errorf("run migrations: %w", err)
+		return errors.Join(fmt.Errorf("run migrations: %w", err), closeMigrator(m))
+	}
+
+	return closeMigrator(m)
+}
+
+func closeMigrator(m *migrate.Migrate) error {
+	sourceErr, dbErr := m.Close()
+	if sourceErr != nil {
+		return fmt.Errorf("close migration source: %w", sourceErr)
+	}
+	if dbErr != nil {
+		return fmt.Errorf("close migration database: %w", dbErr)
 	}
 	return nil
 }

@@ -19,7 +19,9 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 	dbPath := tmpFile.Name()
-	tmpFile.Close()
+	if err := tmpFile.Close(); err != nil {
+		panic(err)
+	}
 
 	featureApp, err = app.New(app.Config{
 		DatabaseURL: dbPath,
@@ -30,6 +32,8 @@ func TestMain(m *testing.M) {
 	}
 
 	code := m.Run()
-	_ = os.Remove(dbPath)
+	if err := os.Remove(dbPath); err != nil {
+		panic(err)
+	}
 	os.Exit(code)
 }

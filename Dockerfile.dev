@@ -1,0 +1,18 @@
+FROM golang:1.22-bookworm
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    gcc \
+    libc6-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV CGO_ENABLED=1
+
+# Prebuilt binary avoids a Go 1.23+ toolchain requirement from recent golangci-lint releases.
+RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh \
+    | sh -s -- -b /go/bin v2.1.6
+
+WORKDIR /app
+
+CMD ["bash"]

@@ -59,6 +59,7 @@ go-101/
 ├── Makefile             # Development commands (test, lint, build)
 ├── .github/workflows/   # GitHub Actions CI
 ├── Dockerfile           # How to build the container image
+├── Dockerfile.dev       # Dev image for tests and linting
 ├── docker-compose.yml   # How to run the container
 ├── .dockerignore        # Files to exclude from Docker build
 ├── .env.example         # Environment variables template
@@ -249,18 +250,22 @@ Run the test suite (mirrors the FastAPI-101 test coverage):
 ```bash
 make test
 
-# Or directly:
-go test -v -race ./internal/... ./tests/...
+# With local Go installed:
+make test-local
 ```
 
 ## Development
+
+Development commands run inside Docker by default (no local Go install required):
 
 ```bash
 make lint          # Run golangci-lint
 make test-coverage # Run tests with coverage report
 make build         # Build binary
-make install-tools # Install golangci-lint and migrate CLI
+make docker-shell  # Interactive dev container shell
 ```
+
+With local Go and golangci-lint installed, use `make test-local`, `make lint-local`, or `make install-tools`.
 
 CI runs on every push and pull request to `main` via GitHub Actions (`.github/workflows/ci.yml`).
 
