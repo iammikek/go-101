@@ -301,6 +301,8 @@ CI runs on every push and pull request to `main` via GitHub Actions (`.github/wo
 | [nest-101](https://github.com/iammikek/nest-101) | 8006 | API-only | NestJS, TypeScript |
 | [express-101](https://github.com/iammikek/express-101) | 8007 | API-only | Express, Vitest |
 | [**go-101**](https://github.com/iammikek/go-101) | 8000* | API-only | Gin, GORM |
+| [fortran-101](https://github.com/iammikek/fortran-101) | 8008 | API-only | Fortran, fpm |
+| [java-101](https://github.com/iammikek/java-101) | 8009 | API-only | Spring Boot, JPA, Flyway |
 
 \* go-101 also uses port 8000 — run one backend at a time, or change port in config.
 
@@ -314,7 +316,7 @@ CI runs on every push and pull request to `main` via GitHub Actions (`.github/wo
 
 ### Suggested pairing
 
-- **Compare compiled vs Python API:** go-101 vs [fastAPI-101](https://github.com/iammikek/fastAPI-101)
+- **Compare compiled backends:** go-101 vs [fastAPI-101](https://github.com/iammikek/fastAPI-101), [fortran-101](https://github.com/iammikek/fortran-101) (8008), or [java-101](https://github.com/iammikek/java-101) (8009)
 - **Pair with a client:** [react-101](https://github.com/iammikek/react-101), [vue-101](https://github.com/iammikek/vue-101), or [flutter-101](https://github.com/iammikek/flutter-101)
 
 Catalogue: [automica.io/learning-101](https://automica.io/learning-101.html)
